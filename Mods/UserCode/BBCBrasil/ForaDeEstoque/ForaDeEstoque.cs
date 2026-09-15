@@ -73,11 +73,11 @@ namespace Eco.Mods.TechTree
     [Serialized, Eco, Localized]
     public enum MostrarLojas
     {
-        Minhas,
-        DaCidade,
+        Mine,
+        InTown,
     }
 
-    [Serialized, CreateComponentTabLoc("Fora de Estoque", true), HasIcon("StoreComponent"), Priority(900)]
+    [Serialized, CreateComponentTabLoc("Out of Stock", true), HasIcon("StoreComponent"), Priority(900)]
     public class ForaDeEstoqueComponent : WorldObjectComponent
     {
         public override WorldObjectComponentClientAvailability Availability
@@ -86,11 +86,11 @@ namespace Eco.Mods.TechTree
         [SyncToView] public override string IconName => "StoreComponent";
 
         [SyncToView, Autogen, Sort(0), UITypeName("GeneralHeader")]
-        public string Title => "Fora de Estoque";
+        public string Title => "Out of Stock";
 
         [Eco(AccessType.FullAccess), Sort(1), Description(
-            "Quais lojas aparecem para escolher. Minhas: as suas. Da cidade: todas as do assentamento desta mesa.")]
-        public MostrarLojas Mostrar { get; set; } = MostrarLojas.Minhas;
+            "Which stores show up in the list to choose from. Mine: yours. In town: every store in this table's settlement.")]
+        public MostrarLojas Mostrar { get; set; } = MostrarLojas.Mine;
 
         // PropReadOnly NAO E OPCIONAL AQUI.
         // Sem ele, [Autogen] faz o CLIENTE tratar a propriedade como editavel e chamar um
@@ -98,11 +98,11 @@ namespace Eco.Mods.TechTree
         // (medido em campo 15/09, com a aba ja funcionando). O servidor sobrevive; o cliente
         // nao. Molde: HotWheels/Components/ChargerComponent.cs, instalado aqui.
         [SyncToView, Autogen, PropReadOnly, UITypeName("StringDisplay"), Sort(2),
-         Description("A loja que esta sendo monitorada.")]
+         Description("The store being watched.")]
         public string Loja => this.loja;
 
         [Autogen, RPC, Sort(3), UITypeName("BigButton"), Description(
-            "Passa para a proxima loja da lista.")]
+            "Move to the next store in the list.")]
         public void ProximaLoja(Player player)
         {
             this.escolhida++;
@@ -110,16 +110,16 @@ namespace Eco.Mods.TechTree
         }
 
         [Autogen, RPC, Sort(4), UITypeName("BigButton"), Description(
-            "Refaz a lista agora.")]
+            "Rebuild the list now.")]
         public void Atualizar(Player player) => this.Recalcular(player);
 
         [SyncToView, Autogen, PropReadOnly, UITypeName("StringDisplay"), Sort(5),
-         Description("O que esta mesa fabrica, esta zerado na loja, e voce ainda nao mandou fabricar.")]
+         Description("What this table crafts, is sold out at the store, and you have not queued yet.")]
         public string Falta => this.falta;
 
         // ---------------------------------------------------------------- estado interno
         [Serialized] int escolhida;          // indice da loja na lista filtrada
-        [Serialized] string loja = "(aperte Atualizar)";
+        [Serialized] string loja = "(press Refresh)";
         [Serialized] string falta = "";
         User ultimoUsuario;                  // para o evento saber por quem recalcular
 
@@ -161,9 +161,9 @@ namespace Eco.Mods.TechTree
                 var lojas = this.AcharLojas(user);
                 if (lojas.Count == 0)
                 {
-                    this.Mostra(this.Mostrar == MostrarLojas.Minhas
-                        ? "nenhuma loja sua"
-                        : "nenhuma loja neste assentamento", "");
+                    this.Mostra(this.Mostrar == MostrarLojas.Mine
+                        ? "no store of yours"
+                        : "no store in this settlement", "");
                     return;
                 }
 
@@ -184,13 +184,13 @@ namespace Eco.Mods.TechTree
                     Enfeita(string.Format("{0}   ({1} / {2})",
                         loja.SourceName, this.escolhida + 1, lojas.Count)),
                     faltando.Count == 0
-                        ? Enfeita("Nada faltando aqui.")
+                        ? Enfeita("Nothing missing here.")
                         : Enfeita(string.Join("\n", faltando)));
             }
             catch (Exception e)
             {
                 // Diagnostico nao pode derrubar jogabilidade -- mesma regra do KabongLog.
-                this.Mostra(this.loja, "erro ao montar a lista (ver log)");
+                this.Mostra(this.loja, "could not build the list (see log)");
                 Log.WriteLine(Localizer.DoStr("[ForaDeEstoque] " + e.Message));
             }
         }
@@ -206,7 +206,7 @@ namespace Eco.Mods.TechTree
                 var loja = wo.GetComponent<StoreComponent>();
                 if (loja == null) return;
 
-                if (this.Mostrar == MostrarLojas.Minhas)
+                if (this.Mostrar == MostrarLojas.Mine)
                 {
                     // dono: a forma que o __core__ usa
                     if (user == null) return;
