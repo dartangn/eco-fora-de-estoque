@@ -142,9 +142,12 @@ Re-run it after an Eco update, **and after adding any mod that brings a table**:
 python3 gerar-mesas-fora-de-estoque.py --seco   # dry run first
 python3 gerar-mesas-fora-de-estoque.py
 
-python3 gerar-mesas-de-mod.py --seco            # the modded tables, same idea
-python3 gerar-mesas-de-mod.py
+python3 instalar.py --so-mesas                  # the modded tables, same idea
 ```
+
+Both find your server on their own, by walking up from where you run them until they hit a
+`Mods/__core__` — the one folder only a real Eco server has. Run them from anywhere inside the
+server tree, or pass `--raiz /path/to/server` if you keep the scripts somewhere else.
 
 The modded-table file is written **separately and only for the mods you actually have** — the
 package never ships a reference to a mod you might not own, because that would stop your

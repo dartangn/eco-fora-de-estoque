@@ -1,5 +1,40 @@
 # Fora de Estoque — histórico
 
+## 16/09/2026 — o gerador acha o servidor sozinho, e o histórico foi reescrito
+
+O `gerar-mesas-fora-de-estoque.py` trazia, desde a v1, o caminho de **uma** instalação
+específica (`CORE` e `DESTINO` fixos) e exemplos com `sudo -u <usuário do servidor>`. Para
+quem baixasse o repositório aquilo não era só detalhe de infraestrutura alheia — era um
+script que **não rodava**, porque apontava para uma pasta que não existe na máquina dele.
+
+O conserto não foi trocar os textos: foi reescrever o script para **achar a instalação**,
+na mesma ordem que o `instalar.py` já usava, para os dois não divergirem —
+`--raiz` → variável `ECO_SERVER` → subindo de pasta em pasta até achar um `Mods/__core__`,
+que é a marca que só um servidor Eco de verdade tem. O destino passou a ser a pasta do
+próprio mod, e há `--destino` para quem quiser outra.
+
+Duas coisas entraram junto:
+
+- **Saiu a dependência de `grep`.** A varredura é Python puro agora, então funciona também
+  em servidor Windows, que não tem `grep`. A regra continua a mesma — do atributo até a
+  **primeira** declaração de classe depois dele, sem contar linhas, porque entre os dois há
+  até 12 outros atributos.
+- **Trava nova, testada fazendo-a falhar:** antes de gravar, ele varre `Mods/UserCode` atrás
+  de outro arquivo com a mesma lista. Se achar, **aborta**. Sem isso, uma cópia antiga em
+  outra pasta faria as 69 classes nascerem duas vezes (`CS0101`) e o servidor não subiria —
+  e o erro só apareceria no arranque.
+
+**E o histórico do git foi reescrito** (`git filter-branch`), porque num repositório público
+apagar num commit novo não apaga nada: o conteúdo continua visível nos commits anteriores.
+Foram os três commits, com o e-mail de autoria corrigido para o da conta junto.
+O `pre-reescrita` é uma tag local com o histórico de antes — não é publicada.
+
+*Os commits antigos podem continuar acessíveis pelo SHA direto no GitHub até ele fazer a
+coleta de lixo. O que havia ali era caminho de pasta e nome de usuário de serviço — nada de
+senha, chave ou token —, então não foi pedida remoção ao suporte.*
+
+---
+
 ## v2 — aprovada em campo em 16/09/2026
 
 ```
@@ -45,6 +80,10 @@ qualquer experimento; se algo adiante quebrar, é para cá que se volta.
 a38dd3e8219b28abd0138fc4fee77fa5   ForaDeEstoqueMesas.cs      7.533 bytes   GERADO
 e9e82cac4e66b293587e14ce42e7f81e   gerar-mesas-fora-de-estoque.py
 ```
+
+*O md5 do gerador acima é o da v1 e **não existe mais em lugar nenhum**: o arquivo foi
+reescrito em 16/09 (seção do topo) e o histórico do git foi reescrito junto, então todos os
+commits carregam a versão nova. O `.cs` e a lista de mesas continuam com os md5 acima.*
 
 ---
 
@@ -124,8 +163,11 @@ Copie o `.cs` para a pasta do mod na sua instalação e regere a lista de mesas:
 ```bash
 # <servidor> = a raiz da sua instalacao do Eco
 cp ForaDeEstoque.cs <servidor>/Mods/UserCode/BBCBrasil/ForaDeEstoque/
-python3 gerar-mesas-fora-de-estoque.py
+python3 gerar-mesas-fora-de-estoque.py --raiz <servidor>
 ```
+
+*Sem `--raiz`, ele sobe de pasta em pasta a partir de onde você o rodou até achar um
+`Mods/__core__` — o que basta quando o script está dentro da árvore do servidor.*
 
 Ou, mais simples, `python3 instalar.py` — ele acha a instalação sozinho e regera as duas
 listas de mesas.

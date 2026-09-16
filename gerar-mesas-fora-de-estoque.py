@@ -50,7 +50,15 @@ def opcao(nome):
 
 
 def achar_raiz():
-    """Sobe a partir desta pasta e do diretorio atual ate achar Mods/__core__."""
+    """Acha a raiz do servidor. Mesma ordem do instalar.py, para nao divergirem:
+    --raiz -> variavel ECO_SERVER -> subindo a partir daqui e do diretorio atual.
+
+    A marca e Mods/__core__: o codigo do JOGO, que so o proprio Eco cria. Procurar por
+    "EcoServer" ou por "Mods" pegaria pasta de download ou de backup.
+    """
+    env = os.environ.get("ECO_SERVER")
+    if env and os.path.isdir(os.path.join(env, REL_CORE)):
+        return os.path.abspath(env)
     candidatos = []
     for base in (os.path.dirname(os.path.abspath(__file__)), os.path.abspath(os.getcwd())):
         atual = base
