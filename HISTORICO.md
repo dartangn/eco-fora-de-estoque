@@ -1,5 +1,66 @@
 # Fora de Estoque — histórico
 
+## v2.0.1 — 16/09/2026: a instrução de instalação estava errada
+
+Lendo o pacote com os olhos de quem **não** é o nosso servidor, a instrução mais destacada da
+1.0.0 e da 2.0.0 — *"instale este mod por último, depois de todo mod que traz mesa"* — **não
+descreve o que acontece**.
+
+O que acontece de verdade:
+
+| | |
+|---|---|
+| o `ForaDeEstoqueMesas.cs` vai no zip **já pronto**, com as 69 mesas do jogo base | nada é varrido na instalação |
+| o Eco compila **todo** o `Mods/UserCode` numa passada a cada arranque | **a ordem não importa** |
+| mesa de outro mod **nunca** entra pelo zip | entra só rodando o `instalar.py`, que **não está no zip** |
+
+Então a frase mandava o usuário fazer uma coisa **sem efeito** e omitia o passo que tem efeito.
+
+**A contradição estava dentro do nosso próprio material**, e foi ela que fechou o caso: o
+`instalar.py` escreve, no cabeçalho do arquivo que gera,
+
+```
+// Ordem de instalacao nao importa: o Eco compila todo o Mods/UserCode numa unica
+// passada a cada arranque. O que importa e o mod da mesa estar PRESENTE no reinicio.
+```
+
+— o gerador estava certo e o README, errado, dizendo coisas opostas no mesmo pacote.
+
+**O que mais a leitura "de fora" achou:**
+
+- **`instalar.py` não está no zip**, e os três textos mandavam rodá-lo. Quem baixa do mod.io
+  recebe 4 arquivos e nenhum script. Agora está dito de onde ele vem.
+- *"gerado na sua máquina **pelo instalador**"* — **não existe instalador** no pacote; é
+  descompactar e reiniciar.
+- O `MESAS-DE-MOD.txt` só dava `grep`, que **não existe em servidor Windows**. Entrou a linha
+  com `findstr` — **testada nesta máquina**, não suposta. E o texto agora diz o que faltava:
+  aqueles comandos listam **arquivos**, e o nome da classe tem de ser lido de dentro deles.
+- **Faltava o aviso do caminho inverso:** ao REMOVER um mod de mesa, a linha gerada continua
+  citando um tipo que não existe — `CS0246`, e **o servidor não sobe**. O `instalar.py` já
+  avisava disso em execução; a documentação, não.
+- A lista de arquivos no mod.io tinha **3** dos 4 do zip (faltava o próprio `MESAS-DE-MOD.txt`).
+- **E o `MESAS-DE-MOD.txt` não estava no repositório.** O zip era montado de uma cópia paralela
+  em `pacote/`, que estava no `.gitignore` — então a única instrução que o pacote entrega
+  **viajava para o jogador e não aparecia no GitHub**, e nada impedia as duas cópias de
+  divergirem. O `empacotar.py` passou a montar da **árvore versionada**, e a cópia paralela foi
+  apagada. *Provado seguro comparando os dois zips entrada por entrada: conteúdo idêntico.*
+
+**Testado como um terceiro faria**, em árvore de servidor limpa: descompactar o zip → rodar
+`instalar.py` → ele achou a raiz sozinho, conferiu os arquivos, achou a mesa de mod e escreveu
+a linha certa; depois **removi** o mod de mesa e ele avisou para apagar o arquivo antes de
+reiniciar. A árvore incluía o caso difícil — mesa do jogo base com **10 atributos** entre o
+`[RequireComponent]` e a classe.
+
+**O código não mudou:** os dois `.cs` são byte a byte os da 2.0.0 (`ccc379cd…` e `a38dd3e8…`).
+
+```
+f892bdd3b7e59974daf13ae88d3228f4   ForaDeEstoque-v2.0.1-Eco14.1.zip   12.781 bytes
+```
+
+*Ninguém foi prejudicado: a página do mod.io marcava **0 downloads** quando o erro foi achado.*
+
+---
+
 ## 16/09/2026 — o gerador acha o servidor sozinho, e o histórico foi reescrito
 
 O `gerar-mesas-fora-de-estoque.py` trazia, desde a v1, o caminho de **uma** instalação

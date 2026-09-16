@@ -1,0 +1,133 @@
+MODDED TABLES / MESAS DE MOD                       Out of Stock -- Eco 0.14.1
+================================================================================
+
+EN
+--------------------------------------------------------------------------------
+What you just unzipped already works: ForaDeEstoqueMesas.cs ships READY-MADE and
+covers the 69 crafting tables of the BASE GAME. Restart the server and they all
+have the tab. No Python, and the order you installed your mods in DOES NOT
+MATTER -- Eco compiles the whole Mods/UserCode in one pass at every startup.
+
+Tables added by OTHER MODS are supported, but they are NOT in that list, and
+their line CANNOT be shipped: a file naming a mod you do not have does not
+compile, and a server that does not compile DOES NOT START. So that line is
+written on YOUR server, from what YOU actually have installed.
+
+  THE EASY WAY -- one command, Linux and Windows, Python 3 and nothing else
+  --------------------------------------------------------------------------
+  Get instalar.py from  https://github.com/dartangn/eco-fora-de-estoque
+  (it is not inside this zip), then:
+
+         python3 instalar.py --seco     # says what it would do, writes nothing
+         python3 instalar.py            # writes the file
+
+  It finds your server on its own, lists the modded tables it found, and writes
+  ForaDeEstoqueMesasDeMod.cs next to this file. Then restart and watch the log.
+
+  BY HAND -- if you would rather not run a script
+  --------------------------------------------------------------------------
+  1. Find the class name of each table your mods add. It is the
+     `public partial class <Name>Object` that comes AFTER an occurrence of
+     [RequireComponent(typeof(CraftingComponent))].
+
+     CAREFUL: up to 12 other attributes can sit between the two (the base-game
+     CarpentryTable has 10), so do not just read the next line.
+
+         Linux    grep -rl "RequireComponent(typeof(CraftingComponent))" Mods/UserCode
+         Windows  findstr /s /m /c:"RequireComponent(typeof(CraftingComponent))" Mods\UserCode\*.cs
+
+     Those list the FILES. Open each one and read the class name out of it.
+
+  2. Create this file, next to the others:
+
+         Mods/UserCode/BBCBrasil/ForaDeEstoque/ForaDeEstoqueMesasDeMod.cs
+
+     with one line per table you actually have:
+
+         namespace Eco.Mods.TechTree
+         {
+             using Eco.Gameplay.Objects;
+
+             [RequireComponent(typeof(ForaDeEstoqueComponent))] public partial class MixologyTableObject { }
+             [RequireComponent(typeof(ForaDeEstoqueComponent))] public partial class IceCreamMachinObject { }
+         }
+
+  3. Restart and WATCH THE LOG. A wrong name gives CS0246 and the server will
+     not start -- delete the file and restart to recover.
+
+  THE THREE REQUIREMENTS, in this order:
+    a) the table must declare [RequireComponent(typeof(CraftingComponent))];
+       without it the tab shows up and the list is always empty
+    b) the class must be `public partial class` in the mod -- if it is not,
+       CS0260 and the server does not start
+    c) the namespace here must be the SAME as the object's in that mod. Almost
+       every Eco mod uses Eco.Mods.TechTree, but check it, don't assume
+
+  *** WHEN YOU REMOVE A TABLE MOD, COME BACK HERE FIRST ***
+  The line still names a type that no longer exists: CS0246, and the server
+  will NOT START. Delete that line -- or the whole ForaDeEstoqueMesasDeMod.cs --
+  BEFORE restarting. Running instalar.py again also rewrites it correctly.
+
+  And never copy ForaDeEstoqueMesasDeMod.cs from another server: it names that
+  server's mods, not yours.
+
+
+PT-BR
+--------------------------------------------------------------------------------
+O que voce acabou de descompactar ja funciona: o ForaDeEstoqueMesas.cs vem
+PRONTO e cobre as 69 mesas de fabricacao do JOGO BASE. Reinicie o servidor e
+todas elas tem a aba. Nao precisa de Python, e a ORDEM em que voce instalou os
+seus mods NAO IMPORTA -- o Eco compila todo o Mods/UserCode numa unica passada
+a cada arranque.
+
+Mesa vinda de OUTRO MOD e suportada, mas NAO esta nessa lista, e a linha dela
+NAO PODE vir no pacote: arquivo que cita um mod que voce nao tem nao compila, e
+servidor que nao compila NAO SOBE. Entao essa linha e escrita no SEU servidor, a
+partir do que VOCE realmente tem.
+
+  O JEITO FACIL -- um comando, Linux e Windows, Python 3 e nada mais
+  --------------------------------------------------------------------------
+  Pegue o instalar.py em  https://github.com/dartangn/eco-fora-de-estoque
+  (ele nao esta dentro deste zip) e rode:
+
+         python3 instalar.py --seco     # so diz o que faria, nao grava nada
+         python3 instalar.py            # grava o arquivo
+
+  Ele acha o seu servidor sozinho, lista as mesas de mod que encontrou e grava o
+  ForaDeEstoqueMesasDeMod.cs ao lado deste arquivo. Depois reinicie vigiando o log.
+
+  A MAO -- se voce preferir nao rodar script
+  --------------------------------------------------------------------------
+  1. Ache o nome da classe de cada mesa que os seus mods acrescentam: e o
+     `public partial class <Nome>Object` que vem DEPOIS de uma ocorrencia de
+     [RequireComponent(typeof(CraftingComponent))].
+
+     CUIDADO: cabem ate 12 outros atributos entre os dois (a CarpentryTable do
+     jogo base tem 10), entao nao basta ler a linha seguinte.
+
+         Linux    grep -rl "RequireComponent(typeof(CraftingComponent))" Mods/UserCode
+         Windows  findstr /s /m /c:"RequireComponent(typeof(CraftingComponent))" Mods\UserCode\*.cs
+
+     Isso lista os ARQUIVOS. Abra cada um e leia o nome da classe la dentro.
+
+  2. Crie o arquivo, ao lado dos outros:
+
+         Mods/UserCode/BBCBrasil/ForaDeEstoque/ForaDeEstoqueMesasDeMod.cs
+
+     com uma linha por mesa que voce REALMENTE tem (veja o exemplo acima).
+
+  3. Reinicie e ACOMPANHE O LOG. Nome errado da CS0246 e o servidor nao sobe --
+     apague o arquivo e reinicie para voltar.
+
+  OS TRES REQUISITOS: a mesa tem de declarar
+  [RequireComponent(typeof(CraftingComponent))]; a classe tem de ser
+  `public partial class` no mod; e o namespace aqui tem de ser o MESMO do objeto
+  naquele mod -- quase todo mod usa Eco.Mods.TechTree, mas isso se confere.
+
+  *** AO REMOVER UM MOD DE MESA, VOLTE AQUI ANTES ***
+  A linha continua citando um tipo que nao existe mais: CS0246, e o servidor NAO
+  SOBE. Apague a linha -- ou o ForaDeEstoqueMesasDeMod.cs inteiro -- ANTES de
+  reiniciar. Rodar o instalar.py de novo tambem reescreve o arquivo certo.
+
+  E nunca copie o ForaDeEstoqueMesasDeMod.cs de outro servidor: ele cita os mods
+  daquele servidor, nao os seus.

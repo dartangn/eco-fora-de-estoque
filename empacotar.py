@@ -16,7 +16,14 @@ O zip funde com a RAIZ do servidor: a primeira pasta dentro dele e "Mods".
 import os, sys, zipfile
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
-RAIZ = os.path.join(AQUI, "pacote")
+
+# A ARVORE VERSIONADA E A FONTE, e ha motivo.
+#
+# Ate a 2.0.0 o zip era montado de uma copia paralela em pacote/, fora do git. Isso deixava
+# duas verdades: o MESAS-DE-MOD.txt VIAJAVA no zip e nao existia no repositorio -- quem
+# abrisse o GitHub nao via a unica instrucao que o pacote entrega -- e nada impedia as duas
+# copias de divergirem sem ninguem notar.
+RAIZ = AQUI
 
 # NUMERO DA VERSAO -- mude AQUI, e use o MESMO no campo "Version" do mod.io.
 #
@@ -26,7 +33,9 @@ RAIZ = os.path.join(AQUI, "pacote")
 # numero; funcionalidade nova, no do meio.
 #
 # Ja publicadas: 1.0.0 (15/09) e 2.0.0 (16/09).
-VERSAO = "2.0.0"
+# 2.0.1 (16/09): so documentacao -- os dois .cs sao byte a byte os da 2.0.0. Corrige a
+# instrucao de ordem de instalacao, que estava errada, e o MESAS-DE-MOD.txt.
+VERSAO = "2.0.1"
 SAIDA = os.path.join(AQUI, "ForaDeEstoque-v%s-Eco14.1.zip" % VERSAO)
 
 # so a arvore Mods/ entra no zip -- README e gerador ficam no GitHub, nao no pacote
