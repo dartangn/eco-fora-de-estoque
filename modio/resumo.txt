@@ -1,0 +1,11 @@
+Campo "Summary" do mod.io -- o texto que aparece na BUSCA, antes de abrir a pagina.
+
+O que esta publicado hoje esta ERRADO: diz "Press Refresh to build the list", que e o
+comportamento da 1.0.0. Na 2.0.0 a lista ja esta pronta quando a aba abre.
+
+Limite do campo: 244 caracteres (o contador do mod.io zera exatamente ai).
+O texto abaixo tem 228 -- 16 de folga.
+
+---8<--- copie daqui
+A tab on every crafting table listing what that table can make, is sold out in the store you picked, and you have not queued yet. Pin the store once; the list is ready when you open the tab. Server-side, no override, no Harmony.
+---8<--- ate aqui
