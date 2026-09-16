@@ -9,7 +9,7 @@ store you picked, and you haven't queued yet**.
 OUT OF STOCK
 Show stores:  [ Mine ▾ ]
               at 🏪 RM STORE
-              [ Next store ]   [ Refresh ]     <- press Next store once, and that's it
+              [ Next store ]   [ Refresh ]     <- Next store picks the shop, Refresh builds the list
 
   Board
   Hardwood Board
@@ -19,7 +19,12 @@ Show stores:  [ Mine ▾ ]
 
 **Press "Next store"** until you land on the shop you want. That shop is then **pinned to that
 table** — saved by name, so it survives a new shop appearing, an old one disappearing, and a
-server restart. From then on you just open the tab: the list is already there.
+server restart, and you don't have to pick it again. **Press "Refresh" to build the list.**
+
+> On a table you have not set up yet the tab opens empty — that is expected: it has no shop to
+> look at until you press *Next store*. And **Eco has no "tab was opened" hook** (checked in the
+> installed game code and in the ModKit API), so *Refresh* is what builds the list when you want
+> to see it now.
 
 > ⚠ **Tables from other mods need one extra step.** Out of the box the tab appears on the
 > **69 crafting tables of the base game**. A table added by another mod — Mixology, IceCream,
@@ -51,14 +56,14 @@ Cancel the order and it comes back.
 > A mark the player has to make by hand is a mark the player forgets to make.
 > Here, the thing that marks it is the act of queuing, which they were going to do anyway.
 
-**The list is kept current, but nothing runs on a tick.** It is rebuilt when an offer in the
-pinned shop actually changes — the same instant the sold-out bell rings — and that is why the
-tab is already right when you open it. A table with no shop pinned does no work at all: it
-returns on the first line of the handler.
+**Nothing runs on a tick.** The list is built when you press *Next store* or *Refresh*, and
+also when an offer in the pinned shop changes — the same instant the sold-out bell rings. A
+table with no shop pinned does no work at all: it returns on the first line of the handler.
 
-*Eco has no "tab was opened" hook — checked in the installed game code and in the official
-ModKit API. So the design is the other way round: keep the state correct, and opening costs
-nothing.*
+**What it does NOT do is build the list when you open the tab**, and that is not an oversight:
+**Eco has no "tab was opened" hook** — checked in the installed game code and in the official
+ModKit API, where the nearest thing is `ITickOnDemand` ("ticks only when explicitly requested").
+So *Refresh* is the button that answers *show me now*.
 
 **Reads state, not events.** The list comes from sell offers with `Stack.Quantity == 0`, not
 from catching the sold-out moment. So it stays correct across server restarts, and after an
@@ -178,9 +183,13 @@ Toda mesa de fabricação ganha uma aba que mostra **o que aquela mesa fabrica, 
 loja que você escolheu, e você ainda não mandou fabricar**.
 
 **Aperte "Próxima loja"** até chegar na loja certa: ela fica **presa àquela mesa**, gravada
-pelo nome, e continua lá depois de reiniciar o servidor. Daí em diante é só abrir a aba — a
-lista já está montada. Depois de mandar fabricar, o item some. Ninguém marca nada à mão: quem
-marca é a fila da própria mesa. Cancelou a ordem, ele volta.
+pelo nome, e continua lá depois de reiniciar o servidor — você não precisa escolher de novo.
+**Aperte "Atualizar" para montar a lista.** Depois de mandar fabricar, o item some. Ninguém
+marca nada à mão: quem marca é a fila da própria mesa. Cancelou a ordem, ele volta.
+
+> Na mesa que você ainda não configurou, a aba abre **vazia** — ela não tem loja para olhar
+> até você apertar *Próxima loja*. E **o Eco não tem gancho de "abriu a aba"**, então quem
+> monta a lista na hora em que você quer ver é o *Atualizar*.
 
 Instalação: descompactar na pasta do servidor, de modo a fundir com `Mods/`, e reiniciar.
 Para desinstalar, apagar a pasta. Nada é gravado no mundo. **Não precisa de Python, e a ordem

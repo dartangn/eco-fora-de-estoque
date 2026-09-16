@@ -20,6 +20,12 @@ byte for byte the 2.0.0 files. If you already run 2.0.0 and have no tables from 
 there is nothing here for you.
 
 ### Fixed
+- **"The list is already there when you open the tab" was not true.** Reported in the field:
+  *"as soon as you enter, the list doesn't appear — you have to select the store or click
+  Refresh."* Correct. The list is built by *Next store* / *Refresh*, and by an offer changing in
+  the pinned shop — **never by opening the tab**, because Eco has no hook for that. A table you
+  have not set up opens empty, and that is expected. Wording fixed everywhere, including the
+  mod.io summary, which still carried the 1.0.0 sentence.
 - **The install instructions were wrong about install order.** 2.0.0 said to install this mod
   *last*, after every mod that adds a crafting table. That is not how it works: the table list
   ships **ready-made** for the 69 base-game tables and nothing is scanned at install time, and
@@ -50,10 +56,11 @@ Approved in the field on a test server running Eco 0.14.1.1 with 29 other mods.
 - *In town* now lists **your own shops first**.
 
 ### Changed
-- **The tab is already up to date when you open it.** The list is rebuilt when an offer in the
-  pinned shop changes — the same instant the sold-out bell rings — instead of only when you
-  press *Refresh*. Eco has no "tab was opened" hook (checked in the installed game code and in
-  the ModKit API), so the design keeps the state correct rather than rebuilding on open.
+- **The list is also rebuilt when an offer in the pinned shop changes** — the same instant the
+  sold-out bell rings — instead of only when you press *Refresh*.
+  ~~The tab is already up to date when you open it.~~ **That claim was too strong, and is
+  corrected in 2.0.1:** Eco has no "tab was opened" hook, so nothing is built on open — a table
+  you have not set up opens empty, and *Refresh* is what answers *show me now*.
 - The **Mine** filter now accepts both ownership checks the game itself uses:
   `WorldObject.Owners` and `WorldObjectManager.GetOwnedBy`.
 - *Refresh* also re-finds the pinned shop, in case it was renamed.
@@ -93,7 +100,10 @@ First public release.
 ## Em português
 
 **2.0.1 — 16/09/2026.** Só documentação; **o código não mudou** (os dois `.cs` são byte a byte
-os da 2.0.0). A 2.0.0 mandava instalar este mod **por último**, e isso está errado: a lista das
+os da 2.0.0). A 2.0.0 dizia que *"a lista já está montada quando você abre a aba"*, e **não
+está**: quem monta é o *Próxima loja* / *Atualizar*, e uma mudança de oferta na loja fixada —
+**nunca o abrir da aba**, porque esse gancho não existe no Eco. Mesa que você ainda não
+configurou abre vazia, e isso é o esperado. A 2.0.0 mandava instalar este mod **por último**, e isso está errado: a lista das
 69 mesas do jogo base vem **pronta** no pacote, nada é varrido na instalação, e o Eco compila
 todo o `Mods/UserCode` numa única passada a cada arranque — **a ordem não importa**. O que
 precisa vir depois dos seus mods de mesa é *rodar o `instalar.py`*, que é passo separado,

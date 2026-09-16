@@ -1,11 +1,30 @@
 Campo "Summary" do mod.io -- o texto que aparece na BUSCA, antes de abrir a pagina.
 
-O que esta publicado hoje esta ERRADO: diz "Press Refresh to build the list", que e o
-comportamento da 1.0.0. Na 2.0.0 a lista ja esta pronta quando a aba abre.
-
 Limite do campo: 244 caracteres (o contador do mod.io zera exatamente ai).
-O texto abaixo tem 228 -- 16 de folga.
+O texto abaixo tem 229 -- 15 de folga.
 
 ---8<--- copie daqui
-A tab on every crafting table listing what that table can make, is sold out in the store you picked, and you have not queued yet. Pin the store once; the list is ready when you open the tab. Server-side, no override, no Harmony.
+A tab on every crafting table listing what that table can make, is sold out in the store you picked, and you have not queued yet. Press Next store to pick the shop, Refresh to build the list. Server-side, no override, no Harmony.
 ---8<--- ate aqui
+
+
+POR QUE ELE NAO PROMETE "a lista ja esta pronta quando voce abre"
+
+  Duas versoes minhas do resumo prometeram isso, e as duas estavam erradas:
+
+    1.0.0  "Press Refresh to build the list"          <- certo, mas so metade
+    2.0.0  (mantido o de 1.0.0, ja desatualizado)
+    2.0.1  "the list is ready when you open the tab"  <- ERRADO, corrigido pelo Raul em campo
+
+  O que o codigo faz, lido em ForaDeEstoque.cs:
+
+    monta a lista  ->  no botao Next store / Refresh        (Recalcular com player)
+                   ->  quando uma oferta da loja FIXADA muda (Recalcular sem player)
+    NUNCA          ->  ao abrir a aba -- esse gancho nao existe no Eco
+
+  Consequencia para quem usa: na mesa que voce ainda nao configurou, a aba abre vazia e
+  voce TEM de apertar Next store. Depois disso a loja fica presa a mesa, mas quem monta a
+  lista na hora que voce quer ver continua sendo o Refresh.
+
+  Relato do Raul, 16/09/2026: "assim que entra a lista nao aparece, tem que selecionar a
+  loja ou clicar refresh".
