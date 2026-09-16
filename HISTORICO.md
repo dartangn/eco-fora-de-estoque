@@ -1,4 +1,41 @@
-# Fora de Estoque — v1 FUNCIONAL, congelada em 15/09/2026
+# Fora de Estoque — histórico
+
+## v2 — aprovada em campo em 16/09/2026
+
+```
+00891b430cf0ef6733a2e2cbffe4b3dc   ForaDeEstoque-v2.0-Eco14.1.zip   11.772 bytes
+ccc379cdca30c6e26a9a93aae8cdfb06   ForaDeEstoque.cs                 22.795 bytes   escrito a mao
+a38dd3e8219b28abd0138fc4fee77fa5   ForaDeEstoqueMesas.cs             7.533 bytes   GERADO
+```
+
+**O que mudou**
+
+1. **A loja fica presa à mesa**, gravada pelo nome — sobrevive a loja nova nascendo, a loja
+   sumindo e ao reinício do servidor. A v1 guardava a *posição* na lista, que muda sozinha.
+   A fixação é **implícita**: a última que o jogador deixar selecionada é a que fica.
+2. **A lista já está pronta quando a aba abre.** Não existe gancho de "abriu a aba" no Eco —
+   procurado no código do jogo instalado e na API oficial do ModKit. Então o caminho é o
+   inverso: manter o estado certo, para abrir não precisar de nada.
+3. **Defeito de desempenho da v1, corrigido.** Cada mesa do mundo recalculava a cada mudança
+   de oferta, e cada recálculo varria **todos os objetos do mundo** atrás de lojas. Agora mesa
+   sem loja fixada sai na primeira linha do evento.
+4. **Filtro "Minhas" com as duas formas de dono** — `Owners.UserSet` e
+   `WorldObjectManager.GetOwnedBy`; e "Da cidade" traz as suas lojas primeiro.
+5. **`MESAS-DE-MOD.txt` no pacote**, explicando como acrescentar mesa de mod e por que ela não
+   vem pronta.
+
+**O que o campo corrigiu, e vale registrar**
+
+- Uma regressão minha: eu movi a construção da lista para dentro do botão, e com lista vazia
+  ele saía sem mudar a tela — parecia que "só piscava". Voltou ao fluxo da v1.
+- O `SourceName` é membro de `IHasTradeOffers`, **não** de `StoreComponent`. Ler direto da
+  classe dá `CS1061` e derruba o arranque. Foi o arranque vigiado que pegou.
+- O `"Minhas"` vazio do Raul **não era defeito do mod**: o terreno dele estava sem claim, e
+  sem escritura não há dono. O filtro estava certo o tempo todo.
+
+---
+
+## v1 — congelada em 15/09/2026
 
 **Esta versão foi provada em campo pelo Raul no servidor de teste.** Guardada antes de
 qualquer experimento; se algo adiante quebrar, é para cá que se volta.
@@ -82,13 +119,16 @@ possível — o que os evita é ler o molde inteiro antes de escrever.*
 
 ## Como reinstalar esta versão
 
+Copie o `.cs` para a pasta do mod na sua instalação e regere a lista de mesas:
+
 ```bash
-scp -o ProxyJump=SEU_ATALHO ForaDeEstoque.cs usuario@SERVIDOR:~/
-# no servidor, com o servico PARADO:
-cat ~/ForaDeEstoque.cs | sudo -u ECO_USER tee \
-    <servidor>/Mods/UserCode/KabongBrasil/ForaDeEstoque.cs
-sudo -u ECO_USER python3 <scripts>/gerar-mesas-fora-de-estoque.py
+# <servidor> = a raiz da sua instalacao do Eco
+cp ForaDeEstoque.cs <servidor>/Mods/UserCode/BBCBrasil/ForaDeEstoque/
+python3 gerar-mesas-fora-de-estoque.py
 ```
+
+Ou, mais simples, `python3 instalar.py` — ele acha a instalação sozinho e regera as duas
+listas de mesas.
 
 **Arranque vigiado, sempre** (Regra 18). E se o Eco for atualizado, rodar o gerador de novo:
 ele lê a lista de mesas do próprio servidor e avisa se a contagem mudou.

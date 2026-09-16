@@ -17,7 +17,17 @@ import os, sys, zipfile
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.join(AQUI, "pacote")
-SAIDA = os.path.join(AQUI, "ForaDeEstoque-v1.0-Eco14.1.zip")
+
+# NUMERO DA VERSAO -- mude AQUI, e use o MESMO no campo "Version" do mod.io.
+#
+# Decisao do Raul em 16/09/2026: depois da 2.0.0 vem a **2.0.1**, nao a 3. O primeiro numero
+# so sobe quando houver mudanca que quebre servidor de quem ja usa (por exemplo, trocar o
+# caminho das pastas, ou tirar algo que o jogador ja configurou). Correcao vai no ultimo
+# numero; funcionalidade nova, no do meio.
+#
+# Ja publicadas: 1.0.0 (15/09) e 2.0.0 (16/09).
+VERSAO = "2.0.0"
+SAIDA = os.path.join(AQUI, "ForaDeEstoque-v%s-Eco14.1.zip" % VERSAO)
 
 # so a arvore Mods/ entra no zip -- README e gerador ficam no GitHub, nao no pacote
 DENTRO = os.path.join(RAIZ, "Mods")

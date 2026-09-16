@@ -1,2 +1,8 @@
 pacote/
 *.zip
+
+# Ferramentas de operacao do servidor de quem escreveu o mod -- nao do mod. Elas moram aqui
+# por conveniencia, mas carregam caminhos e usuarios de uma instalacao especifica: nao servem
+# para quem baixa, e detalhe de infraestrutura nao vai para repositorio publico.
+pendente-producao/
+gerar-mesas-de-mod.py
