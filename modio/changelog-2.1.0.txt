@@ -1,0 +1,31 @@
+Campo "Changelog" do arquivo, no mod.io -- uma mudanca por linha.
+Vai junto com o upload de ForaDeEstoque-v2.1.0-Eco14.1.zip, campo Version = 2.1.0
+
+---8<--- copie daqui
+Fixed: stock is now counted per ITEM, not per offer. A store can list the same item in more than one offer -- a food shop does it on purpose: one line for the fresh dish at full price, another for the same dish below 50% freshness, cheaper. Judging line by line, the empty cheap one reported "out of stock" while the full one sat right beside it.
+Fixed: an item is no longer listed twice when it has two empty offers of the same item.
+Measured on a real world with 453 evaluations: 89 of them (20%) carried the false positive. After the change: none. Confirmed in game.
+No configuration, no new file, no migration -- replace ForaDeEstoque.cs and restart. Buy offers and tag offers are still skipped, as before.
+---8<--- ate aqui
+
+
+O QUE MAIS TROCAR NA PAGINA, neste upload
+
+  Version ........ 2.1.0
+  Arquivo ........ ForaDeEstoque-v2.1.0-Eco14.1.zip   (13.212 bytes)
+                   md5 do ForaDeEstoque.cs dentro dele: d5e45f200947fede61fb172f761472cc
+
+  Description .... NAO precisa mudar: ela nao fala de como o estoque e contado.
+  Summary ........ NAO precisa mudar por causa da 2.1.0 -- mas continua com o texto
+                   ERRADO da 2.0.1 ("the list is already there"). O certo esta em
+                   resumo.txt, e so grava digitando a mao (ver CLAUDE.md 62.12-62.14).
+
+
+COMO CONFERIR QUE GRAVOU -- o formulario responde 200 sem gravar
+
+  Recarregar a pagina NAO e prova: o navegador restaura o rascunho e mostra o texto novo
+  mesmo quando o servidor ficou com o velho. A prova e a API que a pagina publica le:
+
+    https://mod.io/v1/games/@eco/mods/@out-of-stock-141
+
+  Conferir ali o campo "modfile" (nome e tamanho do zip) e a versao.
