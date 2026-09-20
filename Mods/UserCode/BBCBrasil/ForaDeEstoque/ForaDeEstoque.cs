@@ -399,22 +399,44 @@ namespace Eco.Mods.TechTree
                         foreach (var produto in receita.Products)
                             if (produto?.Item != null) naFila.Add(produto.Item.Type);
 
-            // 3. as ofertas de VENDA zeradas
+            // 3. ESTOQUE POR ITEM, nao por oferta.
+            //    Uma loja pode ter varias linhas de oferta do MESMO item. O caso comum e
+            //    a loja de comida: o mesmo prato em duas ofertas, uma com o alimento
+            //    fresco a preco cheio e outra com o que esta abaixo de 50% de frescor
+            //    mais barato. Decidindo oferta por oferta, a linha vazia dizia "fora de
+            //    estoque" com a outra cheia ao lado. Medido em 20/09/2026 com o mundo de
+            //    producao: 89 de 453 analises (20%) tinham esse falso positivo.
+            var estoquePorItem = new Dictionary<Type, int>();
+            foreach (var o in loja.AllOffers)
+            {
+                if (o == null || o.Buying || o.IsTagOffer) continue;
+                var p = o.Stack;
+                if (p == null || p.Item == null) continue;
+                var t = p.Item.Type;
+                estoquePorItem[t] = (estoquePorItem.ContainsKey(t) ? estoquePorItem[t] : 0) + p.Quantity;
+            }
+
+            // 4. as ofertas de VENDA cujo item esta zerado na loja INTEIRA
             var falta = new List<string>();
+            var jaListado = new HashSet<Type>();   // duas ofertas vazias do mesmo item listavam duas vezes
             foreach (var oferta in loja.AllOffers)
             {
                 if (oferta == null) continue;
                 if (oferta.Buying) continue;         // so venda: na mesa se fabrica, nao se compra
                 if (oferta.IsTagOffer) continue;     // decisao do Raul: so item especifico
                 var pilha = oferta.Stack;
-                if (pilha == null || pilha.Quantity > 0) continue;   // ainda tem estoque
+                if (pilha == null) continue;
                 var item = pilha.Item;
                 if (item == null) continue;
+                var estoqueTotal = estoquePorItem.ContainsKey(item.Type) ? estoquePorItem[item.Type] : 0;
+                if (estoqueTotal > 0) continue;                      // a loja tem, somando TODAS as ofertas
+                if (jaListado.Contains(item.Type)) continue;         // ja listado por outra oferta vazia
                 if (!fabrica.Contains(item.Type)) continue;          // esta mesa nao faz
                 if (naFila.Contains(item.Type)) continue;            // ja mandou fabricar
                 // UILink() e o que o jogo usa para escrever item no texto COM ICONE e
                 // clicavel -- 553 usos no __core__. So o DisplayName sai como texto puro,
                 // que foi o que o Raul viu em campo em 15/09.
+                jaListado.Add(item.Type);
                 falta.Add("  " + item.UILink());
             }
             falta.Sort();

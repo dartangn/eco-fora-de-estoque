@@ -34,7 +34,7 @@ The whole mod is one line:
 
 ```
 MISSING = (what THIS table crafts)
-        ∩ (SELL offers with 0 stock in the chosen store)
+        ∩ (what the chosen store sells and has NONE of)
         − (what is already queued on THIS table)
 ```
 
@@ -65,9 +65,15 @@ table with no shop pinned does no work at all: it returns on the first line of t
 ModKit API, where the nearest thing is `ITickOnDemand` ("ticks only when explicitly requested").
 So *Refresh* is the button that answers *show me now*.
 
-**Reads state, not events.** The list comes from sell offers with `Stack.Quantity == 0`, not
-from catching the sold-out moment. So it stays correct across server restarts, and after an
-item sells out while you were offline.
+**Reads state, not events.** The list comes from what is on the shelf right now, not from
+catching the sold-out moment. So it stays correct across server restarts, and after an item
+sells out while you were offline.
+
+**Stock is counted per item, not per offer.** A store can list the same item in more than one
+offer — a food shop does it on purpose: one line for the **fresh** dish at full price, another
+for the same dish **below 50% freshness** cheaper. Every selling offer of that item is added up
+first, so an empty line no longer reports *out of stock* while a full line of the same item
+sits beside it. The item is also listed only once, however many empty offers it has.
 
 ---
 
@@ -186,6 +192,12 @@ loja que você escolheu, e você ainda não mandou fabricar**.
 pelo nome, e continua lá depois de reiniciar o servidor — você não precisa escolher de novo.
 **Aperte "Atualizar" para montar a lista.** Depois de mandar fabricar, o item some. Ninguém
 marca nada à mão: quem marca é a fila da própria mesa. Cancelou a ordem, ele volta.
+
+**O estoque é somado POR ITEM, não por oferta.** Uma loja pode ter o mesmo item em mais de
+uma oferta — loja de comida faz isso de propósito: uma linha com o prato **fresco** a preço
+cheio e outra com o mesmo prato **abaixo de 50% de frescor** mais barato. Todas as ofertas de
+venda daquele item são somadas antes, então a linha vazia não diz mais *fora de estoque* com a
+cheia ao lado. E o item entra na lista **uma vez só**, por mais ofertas vazias que tenha.
 
 > Na mesa que você ainda não configurou, a aba abre **vazia** — ela não tem loja para olhar
 > até você apertar *Próxima loja*. E **o Eco não tem gancho de "abriu a aba"**, então quem

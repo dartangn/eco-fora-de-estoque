@@ -13,6 +13,44 @@ mod.io version field expects.
 
 ---
 
+## [2.1.0] — 2026-09-20
+
+**The same item can now sit in more than one offer in the same store.** If you run a food shop,
+this is the release you want.
+
+### Changed
+- **Stock is now counted per item, not per offer.** Before, each offer line was judged on its
+  own: an empty line said *out of stock* even when another line of the **same item** in the
+  **same store** was full. Now every selling offer of that item is added up first, and the item
+  is only listed when the store total is zero.
+
+  This matters most for **food shops**, where putting one dish in two offers is the normal way
+  to sell: one line for the **fresh** food at full price, another for the same dish **below 50%
+  freshness** at a lower price. Two lines of one item, on purpose. Judging line by line, the
+  empty cheap one kept reporting *out of stock* while the full one sat right beside it.
+
+- **An item is no longer listed twice.** Two empty offers of the same item used to produce two
+  identical entries in the list.
+
+### How it was found
+The server that reported it had its **world copied to a test server** and a diagnostic build of
+the mod logging every decision. With real shops loaded, the log named the cause in plain text:
+
+```
+offer item=CharredSausageItem qty=126 -> skipped: still in stock
+offer item=CharredSausageItem qty=0   -> LISTED          <- the same item
+```
+
+**89 of 453 evaluations (20%) carried that false positive.** After the change: none — measured
+on the same world, then confirmed in game.
+
+### Notes
+- No configuration, no new file, no migration. Replace `ForaDeEstoque.cs` and restart.
+- Buy offers and tag offers are still skipped, as before.
+- Cost is one extra pass over the offers of a single store — no world scan, no measurable load.
+
+---
+
 ## [2.0.1] — 2026-09-16
 
 Documentation only. **No code changed** — `ForaDeEstoque.cs` and `ForaDeEstoqueMesas.cs` are

@@ -5,3 +5,10 @@
 # para quem baixa, e detalhe de infraestrutura nao vai para repositorio publico.
 pendente-producao/
 gerar-mesas-de-mod.py
+
+# Ferramentas de UMA correcao, e a saida delas. O gerar-diag.py grava num caminho fixo de
+# uma instalacao especifica, e o corrigir-estoque-por-item.py e um patch de mao unica da 2.0.x
+# para a 2.1.0 -- depois de aplicado, quem conta o que mudou e o CHANGELOG e o proprio diff.
+ForaDeEstoque-DIAG.cs
+gerar-diag.py
+corrigir-estoque-por-item.py

@@ -32,10 +32,13 @@ RAIZ = AQUI
 # caminho das pastas, ou tirar algo que o jogador ja configurou). Correcao vai no ultimo
 # numero; funcionalidade nova, no do meio.
 #
-# Ja publicadas: 1.0.0 (15/09) e 2.0.0 (16/09).
+# Ja publicadas: 1.0.0 (15/09), 2.0.0 e 2.0.1 (16/09).
 # 2.0.1 (16/09): so documentacao -- os dois .cs sao byte a byte os da 2.0.0. Corrige a
 # instrucao de ordem de instalacao, que estava errada, e o MESAS-DE-MOD.txt.
-VERSAO = "2.0.1"
+# 2.1.0 (20/09): estoque somado POR ITEM em vez de por oferta. Vai no numero DO MEIO
+# porque muda como o mod le a loja -- passa a suportar o mesmo item em varias ofertas,
+# que e o que loja de comida faz (fresco a preco cheio, abaixo de 50% mais barato).
+VERSAO = "2.1.0"
 SAIDA = os.path.join(AQUI, "ForaDeEstoque-v%s-Eco14.1.zip" % VERSAO)
 
 # so a arvore Mods/ entra no zip -- README e gerador ficam no GitHub, nao no pacote
