@@ -3,7 +3,7 @@
 <hr>
 <h3>The whole mod is one line</h3>
 <pre>MISSING = (what THIS table crafts)
-        &cap; (SELL offers with 0 stock in the chosen store)
+        &cap; (what the chosen store sells and has NONE of)
         &minus; (what is already queued on THIS table)</pre>
 <p><b>Press "Next store"</b> until you land on the shop you want. That shop is then <b>pinned to that table</b> &mdash; saved by name, so it survives a new shop appearing, an old one disappearing, and a server restart, and you never pick it again. <b>Press "Refresh" to build the list.</b></p>
 <p>On a table you have not set up yet the tab opens <b>empty</b> &mdash; it has no shop to look at until you press <i>Next store</i>. And <b>Eco has no "tab was opened" hook</b> (checked in the installed game code and in the official ModKit API), so <i>Refresh</i> is the button that answers <i>show me now</i>. The list is also rebuilt on its own when an offer in the pinned shop changes &mdash; the same instant the sold-out bell rings.</p>
@@ -13,7 +13,8 @@
 <h3>Nothing to tick off</h3>
 <p>Queue the item on the table and it is gone from the list &mdash; because the mod reads <code>CraftingComponent.WorkOrders</code>, the table's own queue. Cancel the order and it comes back.</p>
 <blockquote>A mark the player has to make by hand is a mark the player forgets to make. Here, the thing that marks it is the act of queuing, which they were going to do anyway.</blockquote>
-<p><b>Reads state, not events.</b> The list comes from sell offers with <code>Stack.Quantity == 0</code>, not from catching the sold-out moment. So it stays correct across server restarts, and after an item sells out while you were offline.</p>
+<p><b>Reads state, not events.</b> The list comes from what is on the shelf right now, not from catching the sold-out moment. So it stays correct across server restarts, and after an item sells out while you were offline.</p>
+<p><b>Stock is counted per item, not per offer.</b> A store can list the same item in more than one offer &mdash; a food shop does it on purpose: one line for the <b>fresh</b> dish at full price, another for the same dish <b>below 50% freshness</b>, cheaper. Every selling offer of that item is added up first, so an empty line no longer reports <i>out of stock</i> while a full line of the same item sits beside it. The item is also listed only once, however many empty offers it has.</p>
 <h3>Install</h3>
 <p>Unzip into your server folder so that it merges with <code>Mods/</code>:</p>
 <pre>Mods/UserCode/BBCBrasil/ForaDeEstoque/ForaDeEstoque.cs
@@ -41,6 +42,7 @@ python3 instalar.py           # writes ForaDeEstoqueMesasDeMod.cs</pre>
 <h2>Em portugu&ecirc;s</h2>
 <p>Toda mesa de fabrica&ccedil;&atilde;o ganha uma aba que mostra <b>o que aquela mesa fabrica, est&aacute; zerado na loja que voc&ecirc; escolheu, e voc&ecirc; ainda n&atilde;o mandou fabricar</b>.</p>
 <p><b>Aperte "Pr&oacute;xima loja"</b> at&eacute; chegar na loja certa: ela fica <b>presa &agrave;quela mesa</b>, gravada pelo nome, e continua l&aacute; depois de reiniciar o servidor. Voc&ecirc; n&atilde;o precisa escolher de novo. <b>Aperte "Atualizar" para montar a lista</b> &mdash; na mesa que voc&ecirc; ainda n&atilde;o configurou, a aba abre <b>vazia</b> at&eacute; voc&ecirc; apertar <i>Pr&oacute;xima loja</i>. Depois de mandar fabricar, o item some. Ningu&eacute;m marca nada &agrave; m&atilde;o: quem marca &eacute; a fila da pr&oacute;pria mesa. Cancelou a ordem, ele volta.</p>
+<p><b>O estoque &eacute; somado POR ITEM, n&atilde;o por oferta.</b> Uma loja pode ter o mesmo item em mais de uma oferta &mdash; loja de comida faz isso de prop&oacute;sito: uma linha com o prato <b>fresco</b> a pre&ccedil;o cheio e outra com o mesmo prato <b>abaixo de 50% de frescor</b> mais barato. Todas as ofertas de venda daquele item s&atilde;o somadas antes, ent&atilde;o a linha vazia n&atilde;o diz mais <i>fora de estoque</i> com a cheia ao lado. E o item entra na lista <b>uma vez s&oacute;</b>, por mais ofertas vazias que tenha.</p>
 <blockquote><b>&#9888; Mesa de OUTRO MOD precisa de um passo a mais.</b> O pacote traz a lista pronta das <b>69 mesas do jogo base</b>. Mesa vinda de outro mod n&atilde;o entra por padr&atilde;o, e a linha dela n&atilde;o pode vir no pacote: arquivo que cita um mod que voc&ecirc; n&atilde;o tem <b>n&atilde;o compila, e servidor que n&atilde;o compila n&atilde;o sobe</b>. Quem escreve essa linha &eacute; o <code>instalar.py</code> (que vem do reposit&oacute;rio, n&atilde;o do zip), olhando o que voc&ecirc; realmente tem. Rode de novo toda vez que mudar o conjunto de mods com mesa &mdash; principalmente ao <b>remover</b> um, sen&atilde;o d&aacute; <code>CS0246</code> e o servidor n&atilde;o sobe.</blockquote>
 <p>Instala&ccedil;&atilde;o: descompactar na pasta do servidor, de modo a fundir com <code>Mods/</code>, e reiniciar. Para desinstalar, apagar a pasta. Nada &eacute; gravado no mundo. <b>N&atilde;o precisa de Python, e a ordem em que voc&ecirc; instalou os seus mods n&atilde;o importa</b> &mdash; o Eco compila todo o <code>Mods/UserCode</code> numa &uacute;nica passada a cada arranque.</p>
 <p>Filtro <i>Minhas</i> mostra as suas lojas; <i>Da cidade</i> mostra as do assentamento <b>da mesa</b> &mdash; &eacute; a mesa que vai fabricar, ent&atilde;o a aba responde igual para quem quer que a abra.</p>
